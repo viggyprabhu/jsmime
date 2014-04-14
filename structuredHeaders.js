@@ -86,7 +86,50 @@ function parseContentType(value) {
   });
   return structure;
 }
-structuredDecoders.set("Content-Type", parseContentType);
+function emitContentType(contentType) {
+  // Be forgiving and accept string variants of the content-type.
+  if (typeof contentType == "string")
+    contentType = parseContentType.call(require('./headerparser'),
+      [contentType]);
+
+  this.addText(contentType.type, false);
+  this.addParameters(contentType);
+}
+addHeader("Content-Type", parseContentType, emitContentType);
+// RFC 2183
+function parseDisposition(value) {
+  let params = parseParameterHeader.call(this, value, true, true);
+  let structure = new Map();
+  params.forEach(function (value, name) {
+    name = name.toLowerCase();
+    if (name == "creation-date" || name == "modification-date" ||
+        name == "read-date")
+      value = this.parseDateHeader(value);
+    structure.set(name, value);
+  });
+  structure.isAttachment = params.preSemi.toLowerCase() != "inline";
+  return structure;
+}
+function emitDisposition(value) {
+  if (typeof value == "string") {
+    this.addText(value);
+    return;
+  }
+
+  this.addText(value.isAttachment ? "attachment" : "inline");
+
+  for (let [name, value] of value) {
+    if (value instanceof Date) {
+      this.addText(';', true);
+      this.addText(name + '="', false);
+      this.addDate(value);
+      this.addText('"', false);
+    } else {
+      this.addParameter(name, value);
+    }
+  }
+}
+addHeader("Content-Disposition", parseDisposition, emitDisposition);
 
 // Unstructured headers (just decode RFC 2047 for the first header value)
 function parseUnstructured(values) {

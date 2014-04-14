@@ -43,6 +43,15 @@ function makeCT(media, sub, params) {
     object.set(k, params[k]);
   return object;
 }
+
+function makeCD(isAttachment, params) {
+  var object = new Map();
+  object.isAttachment = isAttachment;
+  for (let k in params)
+    object.set(k, params[k]);
+  return object;
+}
+
 suite('Structured headers', function () {
   // Ad-hoc header tests
   testHeader('Content-Type', [
@@ -88,6 +97,18 @@ suite('Structured headers', function () {
     ['7bit', '7bit'],
     [['7bit', '8bit'], '7bit'],
     ['x-uuencode', 'x-uuencode']
+  ]);
+  testHeader('Content-Disposition', [
+    ['inline', makeCD(false, {})],
+    ['attachment', makeCD(true, {})],
+    ['illegal', makeCD(true, {})],
+    ['attachment; name="filename.txt"', makeCD(true, {name: "filename.txt"})],
+    ['attachment; name="filename.txt"; name*=UTF-8\'\'oxyg%c3%a8ne.txt',
+      makeCD(true, {name: "oxyg\xe8ne.txt"})],
+    ['attachment; name="=?UTF-8?Q?oxyg=c3=a8ne.txt?="',
+      makeCD(true, {name: "oxyg\xe8ne.txt"})],
+    ['inline; name="filename.txt"', makeCD(false, {name: "filename.txt"})],
+    // XXX: test date parameters
   ]);
 
   // Non-ad-hoc header tests

@@ -852,6 +852,12 @@ for (let pair of structuredHeaders.decoders) {
  * - Subject
  *
  * The ad-hoc headers and their resulting formats are as follows:
+ * Content-Disposition: returns a JS Map of parameter names (in lower case) to
+ * their values, along with the following extra property defined on the map:
+ * - isAttachment: true if the disposition should be treated as an attachment
+ *
+ * Content-Transfer-Encoding: the first value is converted to lower-case.
+ *
  * Content-Type: returns a JS Map of parameter names (in lower case) to their
  * values, along with the following extra properties defined on the map:
  * - mediatype: the type to the left of '/' (e.g., 'text', 'message')
@@ -860,8 +866,6 @@ for (let pair of structuredHeaders.decoders) {
  * RFC 2047 and RFC 2231 decoding is applied where appropriate. The values of
  * the type, mediatype, and subtype attributes are all normalized to lower-case,
  * as are the names of all parameters.
- *
- * Content-Transfer-Encoding: the first value is converted to lower-case.
  *
  * @param {String}       header The name of the header of the values.
  * @param {String|Array} value  The value(s) of the headers, after charset

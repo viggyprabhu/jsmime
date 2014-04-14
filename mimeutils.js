@@ -79,9 +79,37 @@ function typedArrayToString(buffer) {
   return string;
 }
 
+
+/**
+ * Quotes the text if any of the characters in qchars are found. If the text is
+ * already quoted (starts and ends with "), then the output is not further
+ * quoted.
+ *
+ * @param {String} text   The text that may need quoting
+ * @param {String} qchars The set of characters that cannot appear outside of a
+ *                        quoted string.
+ * @return {String}       The text, quoted if necessary.
+ */
+function quoteIfNeeded(text, qchars) {
+  let needsQuote = false;
+  if (!(text[0] == '"' && text[text.length - 1] == '"') && qchars != '') {
+    for (let i = 0; i < text.length; i++) {
+      if (qchars.contains(text[i])) {
+        needsQuote = true;
+        break;
+      }
+    }
+  }
+
+  if (needsQuote)
+    text = '"' + text.replace(/["\\]/g, "\\$&") + '"';
+  return text;
+}
+
 return {
   decode_base64: decode_base64,
   decode_qp: decode_qp,
+  quoteIfNeeded: quoteIfNeeded,
   stringToTypedArray: stringToTypedArray,
   typedArrayToString: typedArrayToString,
 };
