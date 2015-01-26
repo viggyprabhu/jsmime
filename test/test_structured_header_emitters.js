@@ -52,7 +52,7 @@ suite('Structured header emitters', function () {
     [makeCT("text/plain", {}), "text/plain"],
     [makeCT("text/plain", {charset: "UTF-8"}), "text/plain; charset=UTF-8"],
     [makeCT("text/plain", {name: "\ud83d\udca9"}),
-     "text/plain; name*=UTF-8''%f0%9f%92%a9"],
+     "text/plain; name*=UTF-8''%F0%9F%92%A9"],
   ]);
 
   testHeader("Content-Transfer-Encoding", [
@@ -69,7 +69,7 @@ suite('Structured header emitters', function () {
     [makeCD(true, {filename: "afile.txt"}), "attachment; filename=afile.txt"],
     [makeCD(false, {filename: "quote me"}), 'inline; filename="quote me"'],
     [makeCD(false, {filename: "\u65E5\u672C"}),
-      "inline; filename*=UTF-8''%e6%97%a5%e6%9c%ac"],
+      "inline; filename*=UTF-8''%E6%97%A5%E6%9C%AC"],
     [makeCD(false, {size: 100}), "inline; size=100"],
     [makeCD(false, {"read-date": new MockDate("2008-01-01T00:00:00+0500")}),
       'inline; read-date="Tue, 1 Jan 2008 00:00:00 +0500"'],

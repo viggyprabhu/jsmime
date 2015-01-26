@@ -342,7 +342,7 @@ const b64Prelude = "=?UTF-8?B?", qpPrelude = "=?UTF-8?Q?";
 /// A list of ASCII characters forbidden in RFC 2047 encoded-words
 const qpForbidden = "=?_()\"";
 
-const hexString = "0123456789abcdef";
+const hexString = "0123456789ABCDEF";
 
 /**
  * Add a block of text as a single RFC 2047 encoded word. This does not try to

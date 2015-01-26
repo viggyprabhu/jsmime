@@ -89,11 +89,11 @@ suite('headeremitter', function () {
     let header_tests = [
       [[{name: "\u0436", email: "a@a.c"}], "=?UTF-8?B?0LY=?= <a@a.c>"],
       [[{name: "dioxyg\u00e8ne", email: "a@a.c"}],
-        "=?UTF-8?Q?dioxyg=c3=a8ne?=\r\n <a@a.c>"],
+        "=?UTF-8?Q?dioxyg=C3=A8ne?=\r\n <a@a.c>"],
       // Prefer QP if base64 and QP are exactly the same length
       [[{name: "oxyg\u00e8ne", email: "a@a.c"}],
       // =?UTF-8?B?b3h5Z8OobmU=?=
-        "=?UTF-8?Q?oxyg=c3=a8ne?=\r\n <a@a.c>"],
+        "=?UTF-8?Q?oxyg=C3=A8ne?=\r\n <a@a.c>"],
       [[{name: "\ud83d\udca9\ud83d\udca9\ud83d\udca9\ud83d\udca9",
         email: "a@a.c"}],
         "=?UTF-8?B?8J+SqfCfkqnwn5Kp?=\r\n =?UTF-8?B?8J+SqQ==?= <a@a.c>"],
@@ -130,9 +130,9 @@ suite('headeremitter', function () {
       ["! \" # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~ \x7f",
         "=?UTF-8?Q?!_=22_#_$_%_&_'_?=\r\n" +
         " =?UTF-8?Q?=28_=29_*_+_,_-_.?=\r\n" +
-        " =?UTF-8?Q?_/_:_;_<_=3d_>_?=\r\n" +
-        " =?UTF-8?Q?=3f_@_[_\\_]_^_=5f?=\r\n" +
-        " =?UTF-8?Q?_`_{_|_}_~_=7f?="],
+        " =?UTF-8?Q?_/_:_;_<_=3D_>_?=\r\n" +
+        " =?UTF-8?Q?=3F_@_[_\\_]_^_=5F?=\r\n" +
+        " =?UTF-8?Q?_`_{_|_}_~_=7F?="],
       // But non-printable characters don't need it in the first place!
       ["! \" # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~",
         "! \" # $ % & ' ( ) * + , - . /\r\n" +
@@ -140,19 +140,19 @@ suite('headeremitter', function () {
         " } ~"],
 
       // Test to make sure 2047-encoding chooses the right values.
-      ["\u001f", "=?UTF-8?Q?=1f?="],
-      ["\u001fa", "=?UTF-8?Q?=1fa?="],
+      ["\u001f", "=?UTF-8?Q?=1F?="],
+      ["\u001fa", "=?UTF-8?Q?=1Fa?="],
       ["\u001faa", "=?UTF-8?B?H2Fh?="],
-      ["\u001faaa", "=?UTF-8?Q?=1faaa?="],
+      ["\u001faaa", "=?UTF-8?Q?=1Faaa?="],
       ["\u001faaa\u001f", "=?UTF-8?B?H2FhYR8=?="],
       ["\u001faaa\u001fa", "=?UTF-8?B?H2FhYR9h?="],
-      ["\u001faaa\u001faa", "=?UTF-8?Q?=1faaa=1faa?="],
+      ["\u001faaa\u001faa", "=?UTF-8?Q?=1Faaa=1Faa?="],
       ["\u001faaa\u001faa\u001faaaa", "=?UTF-8?B?H2FhYR9hYR9hYWFh?="],
 
       // Make sure line breaking works right at the edge cases
-      ["\u001faaa\u001faaaaaaaaa", "=?UTF-8?Q?=1faaa=1faaaaaaaaa?="],
+      ["\u001faaa\u001faaaaaaaaa", "=?UTF-8?Q?=1Faaa=1Faaaaaaaaa?="],
       ["\u001faaa\u001faaaaaaaaaa",
-        "=?UTF-8?Q?=1faaa=1faaaaaaaaa?=\r\n =?UTF-8?Q?a?="],
+        "=?UTF-8?Q?=1Faaa=1Faaaaaaaaa?=\r\n =?UTF-8?Q?a?="],
 
       // Choose base64/qp independently for each word
       ["\ud83d\udca9\ud83d\udca9\ud83d\udca9a",
@@ -167,7 +167,7 @@ suite('headeremitter', function () {
         "chalcog\u00e8nes",
       //          1         2         3
       // 123456789012345678901234567890
-        "=?UTF-8?Q?L'oxyg=c3=a8ne_est?=\r\n" +
+        "=?UTF-8?Q?L'oxyg=C3=A8ne_est?=\r\n" +
         " =?UTF-8?B?IHVuIMOpbMOpbWVu?=\r\n" +
         " =?UTF-8?Q?t_chimique_du_gro?=\r\n" +
         " =?UTF-8?Q?upe_des_chalcog?=\r\n" +
@@ -370,38 +370,38 @@ suite('headeremitter', function () {
 
       // Test the presence of non-ASCII yet non-continuing 2231 scenarios.
       [["key", {"param": "\ud83d\udca9"}],
-        "key;\r\n param*=UTF-8''%f0%9f%92%a9"],
+        "key;\r\n param*=UTF-8''%F0%9F%92%A9"],
       [["key", {"param": "\u00e3 %"}],
-        "key;\r\n param*=UTF-8''%c3%a3%20%25"],
+        "key;\r\n param*=UTF-8''%C3%A3%20%25"],
 
       // Test that we don't break in the middle of a %-sign
       [["key", {"param": "aaa\ud83d\udca9"}],
-        "key;\r\n param*0*=UTF-8''aaa%f0%9f%92;\r\n param*1*=%a9"],
+        "key;\r\n param*0*=UTF-8''aaa%F0%9F%92;\r\n param*1*=%A9"],
       [["key", {"param": "aaaa\ud83d\udca9"}],
-        "key;\r\n param*0*=UTF-8''aaaa%f0%9f;\r\n param*1*=%92%a9"],
+        "key;\r\n param*0*=UTF-8''aaaa%F0%9F;\r\n param*1*=%92%A9"],
       [["key", {"param": "aaaaa\ud83d\udca9"}],
-        "key;\r\n param*0*=UTF-8''aaaaa%f0%9f;\r\n param*1*=%92%a9"],
+        "key;\r\n param*0*=UTF-8''aaaaa%F0%9F;\r\n param*1*=%92%A9"],
       [["key", {"param": "aaaaaa\ud83d\udca9"}],
-        "key;\r\n param*0*=UTF-8''aaaaaa%f0%9f;\r\n param*1*=%92%a9"],
+        "key;\r\n param*0*=UTF-8''aaaaaa%F0%9F;\r\n param*1*=%92%A9"],
       [["key", {"param": "aaaaaaa\ud83d\udca9"}],
-        "key;\r\n param*0*=UTF-8''aaaaaaa%f0;\r\n param*1*=%9f%92%a9"],
+        "key;\r\n param*0*=UTF-8''aaaaaaa%F0;\r\n param*1*=%9F%92%A9"],
 
       // Test that we work even on 2-digit continuation numbers
       [["key", {"param": "\ud83d\udca9".repeat(20)}],
-        "key;\r\n param*0*=UTF-8''%f0%9f%92%a9;\r\n" +
-                " param*1*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*2*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*3*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*4*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*5*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*6*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*7*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*8*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*9*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*10*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*11*=%f0%9f%92%a9%f0%9f;\r\n" +
-                " param*12*=%92%a9%f0%9f%92%a9;\r\n" +
-                " param*13*=%f0%9f%92%a9"],
+        "key;\r\n param*0*=UTF-8''%F0%9F%92%A9;\r\n" +
+                " param*1*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*2*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*3*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*4*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*5*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*6*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*7*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*8*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*9*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*10*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*11*=%F0%9F%92%A9%F0%9F;\r\n" +
+                " param*12*=%92%A9%F0%9F%92%A9;\r\n" +
+                " param*13*=%F0%9F%92%A9"],
     ];
     header_tests.forEach(function (data) {
       arrayTest(data, function () {
