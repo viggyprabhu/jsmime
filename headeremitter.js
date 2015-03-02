@@ -72,6 +72,9 @@ function clamp(value, min, max, def) {
  *   @param [options.useASCII=true] {Boolean}
  *     If true, then RFC 2047 and RFC 2231 encoding of headers will be performed
  *     as needed to retain headers as ASCII.
+ *   @param [options.useOnlyUTC=true] {Boolean}
+ *     If true, then date added in header is always in UTC. This is to provide 
+ *     user location privacy by not revealing Timezone location.
  */
 function HeaderEmitter(handler, options) {
   /// The inferred value of options.useASCII
